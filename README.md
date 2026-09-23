@@ -13,6 +13,13 @@ Limpia tu Gmail de SPAM y basura (SHEIN, TEMU, casinos, phishing, newsletters et
 
 **Live demo:** https://spam-cleaner-gmail.vercel.app
 
+<p align="center">
+  <a href="docs/screenshots/1-overview.png"><img src="docs/screenshots/1-overview.png" width="49%" alt="Vista general: dashboard con 24 correos y scores explicables" /></a>
+  <a href="docs/screenshots/2-limpieza.png"><img src="docs/screenshots/2-limpieza.png" width="49%" alt="Limpieza: filtro SPAM, top remitentes y enlaces de baja" /></a>
+</p>
+
+> Capturas reales de la demo: a la izquierda el análisis completo (24 correos, cada score con sus motivos); a la derecha la limpieza en acción (filtro SPAM, *top remitentes* y lista *unsubscribe*).
+
 ## What it does
 
 - **Demo en 1 clic** — 24 correos realistas (spam, promos, newsletters e importantes como la factura o el email del profe).
