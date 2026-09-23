@@ -1,12 +1,6 @@
-// MailClean MVP — clasificador heurístico explicable, 100% cliente.
-// Decisión técnica: sin backend ni IA externa (privacidad + coste 0 + auditable).
-
-const KEYWORDS = [
-  "descuento","oferta","sale","saldos","gratis","gana","ganaste","premio","cripto","crypto",
-  "préstamo","prestamo","viagra","casino","apuesta","shein","temu","aliexpress","cupón","cupon",
-  "solo hoy","última hora","ultima hora","urgente","herencia","millonario","forex","trading",
-  "resultado loteria","lotería","loteria","inversión garantizada","trabaja desde casa","onlyfans"
-];
+// MailClean MVP — UI + datos demo (100% cliente).
+// La clasificación vive en classifier.js (fuente única, testeable en Node).
+/* global classify, norm */
 
 const DEMO = [
   {from:"shein-ofertas@promo.shein.com",name:"SHEIN",subject:"-80% SOLO HOY!!! Cupón gratis 🎁",snippet:"Compra ya, últimos minutos, haz clic aquí para reclamar tu premio",date:"2026-09-20",sizeKB:180,hasUnsubscribe:true,unsub:"https://promo.shein.com/unsub?m=123"},
@@ -37,26 +31,7 @@ const DEMO = [
 
 let state = { mails: [], selected: new Set(), archived: new Set(), deleted: new Set() };
 
-function norm(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
-
-// Clasificador explicable: devuelve {score, reasons, category}
-function classify(mail, all){
-  let score = 0; const reasons = [];
-  const subj = norm(mail.subject), snip = norm(mail.snippet), from = norm(mail.from);
-  const hits = KEYWORDS.filter(k => subj.includes(norm(k)) || snip.includes(norm(k)));
-  if(hits.length){ score += Math.min(30 + hits.length*5, 45); reasons.push(`Palabras promo/spam: ${hits.slice(0,4).join(", ")} (+${Math.min(30+hits.length*5,45)})`); }
-  if(mail.hasUnsubscribe){ score += 25; reasons.push("Incluye enlace darse de baja / newsletter (+25)"); }
-  if(/unsubscribe|darse de baja|date de baja|clic aqu|click aqu/.test(snip)){ score += 10; reasons.push("Texto típico de boletín masivo (+10)"); }
-  if(/[A-ZÁÉÍÓÚ ]{12,}/.test(mail.subject||"") || /!!!|\$\$\$|🎁|€€/.test(mail.subject||"")){ score += 12; reasons.push("Asunto en mayúsculas / símbolos agresivos (+12)"); }
-  const freq = all.filter(m => m.from===mail.from).length;
-  if(freq>1){ score += 12; reasons.push(`Remitente repetido (${freq} correos) (+12)`); }
-  if(/\.xyz$|\.top$|\.biz$|\.pro$|\.io$/.test(from.split("@")[1]||"")){ score += 14; reasons.push("Dominio sospechoso (.xyz/.top/.biz/.pro/.io) (+14)"); }
-  if(/banco|cuenta.*bloqueada|verifica.*cuenta/.test(subj+snip) && !/universidad|factura|pedido/.test(subj+snip)){ score += 18; reasons.push("Posible phishing bancario (+18)"); }
-  if(!reasons.length){ reasons.push("Sin señales de spam: remitente conocido y asunto normal (+0)"); }
-  score = Math.max(0, Math.min(100, score));
-  const category = score>=70 ? "spam" : score>=45 ? "promo" : "inbox";
-  return {score, reasons, category};
-}
+// classify() y norm() vienen de classifier.js (cargado antes en index.html).
 
 function catLabel(c){ return c==="spam"?"SPAM probable":c==="promo"?"Promo / newsletter":"Bandeja principal"; }
 function catClass(c){ return c==="spam"?"b-spam":c==="promo"?"b-promo":"b-inbox"; }

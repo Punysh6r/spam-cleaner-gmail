@@ -1,0 +1,9 @@
+{
+  "name": "spam-cleaner-gmail",
+  "version": "1.0.0",
+  "description": "Gmail SPAM cleaner with explainable heuristics. 100% client-side, zero backend.",
+  "private": true,
+  "scripts": {
+    "test": "node tests/run-tests.js"
+  }
+}

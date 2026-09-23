@@ -32,7 +32,15 @@
 **Respuesta IA:** borradores de los 4 docs.
 **Nuestra edición:** reescribimos problema con nuestras palabras, añadimos URL despliegue pendiente, fechas reales 9/10 y 13/10, y firmamos quién hizo qué.
 
-## Sesión 5 — Pendiente (antes del 9/10) — Despliegue y ensayo
+## Sesión 5 — 23/09/2026 — Profesionalizar el repo (30 min)
+**Objetivo:** que el repo se vea tan profesional como `btc-quant-analysis` (badges, tests, LICENSE, CI).
+**Prompt:**
+> "Mira mi repo btc-quant-analysis y deja spam-cleaner-gmail igual de profesional: badges, LICENSE MIT, tests y CI."
+**Respuesta IA:** extrajo el clasificador a `classifier.js` (fuente única), creó 12 tests sin dependencias (`npm test`), workflow de CI, `LICENSE MIT`, `docs/DECISION_LOG.md` y README con badges + tabla de resultados verificados.
+**Nuestra verificación:** `npm test` → 12 passed; comprobamos a mano los scores del README (SHEIN 92, phishing 67, factura 0).
+**Error que cazamos:** al duplicar la lógica entre app y tests, un cambio de pesos podía romper la demo sin avisar → la CI lo impide ahora.
+
+## Sesión 6 — Pendiente (antes del 9/10) — Despliegue y ensayo
 **Plan:** subir a GitHub → Deploy en Vercel → pegar URL en README → ensayar demo 5 min con cronómetro → exportar plan CSV como evidencia.
 **Prompts previstos:** "Dame pasos Vercel para sitio estático" / "Revisa este error de deploy: …".
 

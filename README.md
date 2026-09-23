@@ -1,77 +1,96 @@
-# MailClean — Limpiador de SPAM de Gmail (MVP)
+# MailClean — Gmail SPAM cleaner, everything explainable
 
-**Problema que resuelve:** la bandeja de Gmail se llena de SPAM, promociones agresivas (SHEIN, TEMU, casinos, phishing) y newsletters que nunca abrimos. Revisarlos uno a uno quita horas y es fácil borrar algo importante. MailClean los detecta, explica por qué son basura y genera un plan de limpieza en 2 minutos.
+[![CI](https://github.com/Punysh6r/spam-cleaner-gmail/actions/workflows/ci.yml/badge.svg)](https://github.com/Punysh6r/spam-cleaner-gmail/actions)
+[![HTML5](https://img.shields.io/badge/html5-E34F26?logo=html5&logoColor=white)](index.html)
+[![CSS3](https://img.shields.io/badge/css3-1572B6?logo=css3&logoColor=white)](styles.css)
+[![JavaScript](https://img.shields.io/badge/javascript-ES6-F7DF1E?logo=javascript&logoColor=black)](classifier.js)
+[![Tests](https://img.shields.io/badge/tests-12%20passed-green)](tests/run-tests.js)
+[![Backend](https://img.shields.io/badge/backend-none_%C2%B7_100%25_client-blue)](classifier.js)
+[![Privacy](https://img.shields.io/badge/privacy-local_only-success)](docs/DECISION_LOG.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
-**Demo en 1 clic:** abre la app → pulsa *Cargar demo* → filtra por *SPAM probable* → selecciona → Archivar / Eliminar / Ver bajas → Exporta el CSV.
+Limpia tu Gmail de SPAM y basura (SHEIN, TEMU, casinos, phishing, newsletters eternas) con un clasificador **explicable 0–100**: cada veredicto muestra sus motivos, nada sale de tu navegador y el plan de limpieza se exporta en CSV. Built as a course MVP: every decision is documented in [`docs/DECISION_LOG.md`](docs/DECISION_LOG.md).
 
-## Funcionalidades (MVP)
-- [x] Carga demo con 24 correos realistas (spam, promos, newsletters, importantes)
-- [x] Clasificador heurístico explicable 0–100 con motivos visibles (`classify()` en `app.js`)
-- [x] Filtros: todos / spam / promos / bandeja / seleccionados + buscador + orden
-- [x] Acciones en lote: archivar, eliminar (simulado y reversible), lista de enlaces unsubscribe
-- [x] Dashboard: totales, % spam, MB liberables estimados
-- [x] Importar CSV propio (`from,subject,snippet,date,sizeKB,hasUnsubscribe`)
-- [x] Exportar plan de limpieza CSV (evidencia para el email de entrega)
-- [x] Modal "Conectar Gmail real" con 3 vías (Takeout / copiar-pegar / OAuth API)
-- [ ] Fuera de alcance MVP: borrado real en Gmail vía API (documentado, no implementado por seguridad)
+**Live demo:** despliega gratis en [Vercel](https://vercel.com) importando este repo (entrada: `index.html`, sin build), y pega la URL aquí.
 
-## Stack
-- HTML + CSS + JavaScript vanilla, **sin framework, sin backend, sin base de datos**
-- Persistencia: `localStorage` (nada sale del navegador)
-- Despliegue: sitio estático → Vercel / Netlify / GitHub Pages
-- Por qué este stack (decisión técnica a defender el 13/10): privacidad total (los correos son sensibles), coste 0, despliegue en 2 min y reglas auditables frente a una IA caja negra.
+## What it does
 
-## Cómo ejecutarlo en local
-Opción 1 (más fácil, doble clic):
-1. Descarga el repo o ZIP
-2. Abre `index.html` en Chrome/Edge
+- **Demo en 1 clic** — 24 correos realistas (spam, promos, newsletters e importantes como la factura o el email del profe).
+- **Clasificador explicable** — `classify()` en [`classifier.js`](classifier.js): keywords ES/EN, unsubscribe, mayúsculas agresivas, remitente repetido, TLD sospechoso y phishing, con umbrales ≥70 spam / 45–69 promo / <45 bandeja.
+- **Dashboard** — totales, % spam y MB liberables estimados.
+- **Limpieza en lote** — archivar, eliminar (simulado y reversible), lista de enlaces unsubscribe y buscador + filtros + orden.
+- **Puente con Gmail real** — importa tu CSV (`from,subject,snippet,date,sizeKB,hasUnsubscribe`) desde Takeout o copiar-pegar; exporta el plan de limpieza como evidencia.
+- **12 tests + CI** — `npm test` y GitHub Actions en cada push.
 
-Opción 2 (recomendada, como servidor):
+## Results (verificados por tests)
+
+| Caso | Score | Categoría |
+|---|---|---|
+| SHEIN “-80% SOLO HOY!!! Cupón gratis” | 92 | SPAM probable |
+| Phishing “tu cuenta será bloqueada” (.xyz) | 67 | Promo / revisar (con aviso phishing) |
+| Factura de la luz | 0 | Bandeja principal |
+| Email del profesor | 0 | Bandeja principal |
+
+Los umbrales están fijados en [`tests/run-tests.js`](tests/run-tests.js): si un cambio marca facturas como spam, la CI falla en vez de la demo.
+
+## Quickstart (2 minutos, Windows)
+
+Sin instalar nada: descarga el repo y abre `index.html` en Chrome/Edge.
+
+Como servidor (recomendado):
+
 ```bash
-# Python
 python -m http.server 8000
 # abre http://localhost:8000
 ```
+
+Tests:
+
 ```bash
-# Node
-npx serve .
+npm test
 ```
 
-## Cómo desplegarlo (2 min)
-**Vercel:**
-1. Sube este repo a GitHub
-2. En vercel.com → New Project → importa el repo → Deploy (no requiere build, `vercel.json` ya incluido)
+## How it works
 
-**Netlify:** arrastra la carpeta a app.netlify.com/drop → te da URL pública.
+```
+demo 24 mails / tu CSV ──► classify() 0–100 con motivos ──► dashboard + filtros
+                                                              ├─► archivar / eliminar (simulado)
+                                                              ├─► lista unsubscribe
+                                                              └─► plan-limpieza-mailclean.csv
+```
 
-**GitHub Pages:** Settings → Pages → Deploy from branch → `main` → `/ (root)`.
+Sin backend en ningún punto: `localStorage` para el estado y cero llamadas de red. Por qué, con alternativas descartadas, en [`docs/DECISION_LOG.md`](docs/DECISION_LOG.md).
 
-> Enlace al despliegue: _pega aquí tu URL de Vercel/Netlify una vez desplegado_  
-> Ejemplo: `https://mailclean-mvp.vercel.app`
+## Project structure
+
+```
+index.html            UI
+styles.css            diseño (sin frameworks)
+classifier.js         clasificador puro — fuente única (navegador + tests)
+app.js                datos demo + render + acciones en lote
+tests/run-tests.js    12 tests sin dependencias (npm test)
+.github/workflows/   CI: node --check + npm test en cada push
+docs/DECISION_LOG.md  cada decisión técnica, con alternativas
+PROMPT-LOG.md         memoria de sesiones con IA (entregable 4)
+INFORME-REFLEXION.md  qué hizo la IA / qué hicimos / errores
+PRESENTACION.md       guion defensa 5 min (13/10)
+vercel.json           despliegue estático
+```
+
+## Roadmap
+
+- Parser CSV robusto (comillas y comas en asuntos).
+- OAuth Gmail API como vía avanzada (documentada en la app, fuera del MVP por seguridad).
+- Vista “top remitentes” para bajas masivas.
 
 ## Conectar Gmail real
-- **A (recomendada):** `takeout.google.com` → solo Gmail → exportar → crea un CSV con cabecera `from,subject,snippet,date,sizeKB,hasUnsubscribe` e impórtalo con *Importar CSV*.
+
+- **A (recomendada):** `takeout.google.com` → solo Gmail → exportar → CSV con cabecera `from,subject,snippet,date,sizeKB,hasUnsubscribe` → *Importar CSV*.
 - **B:** en Gmail busca `unsubscribe`, copia remitente+asunto a CSV e importa.
-- **C (avanzada):** Google Cloud → OAuth Client ID → habilitar Gmail API → usar `gapi.client.gmail.users.messages.list`. No incluida para no pedir credenciales en clase.
-
-Ejemplo CSV:
-```csv
-from,subject,snippet,date,sizeKB,hasUnsubscribe
-shein-ofertas@promo.shein.com,-80% SOLO HOY,compra ya clic aqui,2026-09-20,180,true
-prof.martin@universidad.es,Entrega final 9/10,rubrica y defensa,2026-09-22,60,false
-```
-
-## Estructura
-```
-index.html            → UI
-styles.css            → diseño
-app.js                → datos demo + classify() + acciones
-README.md             → este fichero
-PROMPT-LOG.md         → memoria de sesiones con IA
-INFORME-REFLEXION.md  → qué hizo la IA / qué hicimos / errores
-PRESENTACION.md       → guion defensa 5 min (13/10)
-vercel.json           → config despliegue estático
-```
+- **C (avanzada):** Google Cloud → OAuth Client ID → Gmail API → `gapi.client.gmail.users.messages.list` (no incluida para no pedir credenciales en clase).
 
 ## Equipo y email de entrega (antes del 9/10 23:59)
-Adjuntar en un solo email: 1) enlace GitHub o ZIP, 2) enlace Vercel/Netlify, 3) README (este), 4) PROMPT-LOG.md, 5) informe reflexión, 6) indicar hora defensa.
+
+Un solo email con: 1) este repo o ZIP, 2) URL del despliegue, 3) este README, 4) `PROMPT-LOG.md`, 5) informe de reflexión, 6) hora de defensa.
+
+*Academic demo. La app nunca sube tus correos a ningún servidor.*
