@@ -89,8 +89,4 @@ vercel.json           despliegue estático
 - **B:** en Gmail busca `unsubscribe`, copia remitente+asunto a CSV e importa.
 - **C (avanzada):** Google Cloud → OAuth Client ID → Gmail API → `gapi.client.gmail.users.messages.list` (no incluida para no pedir credenciales en clase).
 
-## Equipo y email de entrega (antes del 9/10 23:59)
-
-Un solo email con: 1) este repo o ZIP, 2) URL del despliegue, 3) este README, 4) `PROMPT-LOG.md`, 5) informe de reflexión, 6) hora de defensa.
-
 *Academic demo. La app nunca sube tus correos a ningún servidor.*
