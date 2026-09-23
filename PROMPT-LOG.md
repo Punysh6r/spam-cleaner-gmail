@@ -44,6 +44,11 @@
 **Plan:** subir a GitHub → Deploy en Vercel → pegar URL en README → ensayar demo 5 min con cronómetro → exportar plan CSV como evidencia.
 **Prompts previstos:** "Dame pasos Vercel para sitio estático" / "Revisa este error de deploy: …".
 
+## Sesión 6 — 23/09/2026 — Pack nota máxima (mejoras)
+**Objetivo:** subir de 8 a 9+ con parser robusto, top-remitentes, favicon/OG y más tests.
+**Respuesta IA:** `csv.js` + 4 tests, vista top-remitentes con selección de golpe, favicon SVG + meta OG, badge a 16 tests.
+**Nuestra verificación:** `npm test` → 16 passed; importar CSV con comas entre comillas ya no se rompe.
+
 ## Resumen de dirección (para la defensa)
 - Nosotros: idea, alcance, umbrales, casos de prueba, decisión privacidad, despliegue.
 - IA: boilerplate, 24 datos demo, CSS base, borradores docs.

@@ -8,5 +8,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: node --check classifier.js && node --check app.js
+      - run: node --check classifier.js && node --check csv.js && node --check app.js
       - run: npm test

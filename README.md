@@ -4,7 +4,7 @@
 [![HTML5](https://img.shields.io/badge/html5-E34F26?logo=html5&logoColor=white)](index.html)
 [![CSS3](https://img.shields.io/badge/css3-1572B6?logo=css3&logoColor=white)](styles.css)
 [![JavaScript](https://img.shields.io/badge/javascript-ES6-F7DF1E?logo=javascript&logoColor=black)](classifier.js)
-[![Tests](https://img.shields.io/badge/tests-12%20passed-green)](tests/run-tests.js)
+[![Tests](https://img.shields.io/badge/tests-16%20passed-green)](tests/run-tests.js)
 [![Backend](https://img.shields.io/badge/backend-none_%C2%B7_100%25_client-blue)](classifier.js)
 [![Privacy](https://img.shields.io/badge/privacy-local_only-success)](docs/DECISION_LOG.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
@@ -19,8 +19,9 @@ Limpia tu Gmail de SPAM y basura (SHEIN, TEMU, casinos, phishing, newsletters et
 - **Clasificador explicable** — `classify()` en [`classifier.js`](classifier.js): keywords ES/EN, unsubscribe, mayúsculas agresivas, remitente repetido, TLD sospechoso y phishing, con umbrales ≥70 spam / 45–69 promo / <45 bandeja.
 - **Dashboard** — totales, % spam y MB liberables estimados.
 - **Limpieza en lote** — archivar, eliminar (simulado y reversible), lista de enlaces unsubscribe y buscador + filtros + orden.
-- **Puente con Gmail real** — importa tu CSV (`from,subject,snippet,date,sizeKB,hasUnsubscribe`) desde Takeout o copiar-pegar; exporta el plan de limpieza como evidencia.
-- **12 tests + CI** — `npm test` y GitHub Actions en cada push.
+- **Puente con Gmail real** — importa tu CSV (`from,subject,snippet,date,sizeKB,hasUnsubscribe`) con parser robusto (comillas, comas, CRLF); exporta el plan de limpieza como evidencia.
+- **Top remitentes** — agrupa por remitente para seleccionar de golpe al spammer más pesado.
+- **16 tests + CI** — `npm test` y GitHub Actions en cada push.
 
 ## Results (verificados por tests)
 
@@ -67,8 +68,9 @@ Sin backend en ningún punto: `localStorage` para el estado y cero llamadas de r
 index.html            UI
 styles.css            diseño (sin frameworks)
 classifier.js         clasificador puro — fuente única (navegador + tests)
+csv.js                  parser CSV robusto (comillas, CRLF, cabecera)
 app.js                datos demo + render + acciones en lote
-tests/run-tests.js    12 tests sin dependencias (npm test)
+tests/run-tests.js    16 tests sin dependencias (npm test)
 .github/workflows/   CI: node --check + npm test en cada push
 docs/DECISION_LOG.md  cada decisión técnica, con alternativas
 PROMPT-LOG.md         memoria de sesiones con IA (entregable 4)
@@ -79,7 +81,6 @@ vercel.json           despliegue estático
 
 ## Roadmap
 
-- Parser CSV robusto (comillas y comas en asuntos).
 - OAuth Gmail API como vía avanzada (documentada en la app, fuera del MVP por seguridad).
 - Vista “top remitentes” para bajas masivas.
 

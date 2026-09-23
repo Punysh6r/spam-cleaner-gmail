@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>MailClean — Limpiador de SPAM de Gmail (MVP)</title>
 <meta name="description" content="MVP: detecta y limpia correos SPAM / promociones / newsletters de Gmail. 100% en local, sin servidor." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📧</text></svg>" />
+<meta property="og:title" content="MailClean — Limpiador de SPAM de Gmail" />
+<meta property="og:description" content="Clasificador explicable 0–100, limpieza en lote y lista unsubscribe. 100% en tu navegador." />
+<meta property="og:type" content="website" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -68,6 +72,11 @@
     <button id="btnReset" class="btn ghost">Restablecer demo</button>
   </section>
 
+  <section id="topsWrap" class="tops hidden">
+    <h3>Top remitentes <span class="muted">— selecciona de golpe al más pesado</span></h3>
+    <div id="tops" class="tops-grid"></div>
+  </section>
+
   <section id="unsubPanel" class="unsub hidden">
     <h3>Enlaces para darte de baja <span id="unsubN"></span></h3>
     <p>Copia y abre cada enlace para dejar de recibir esos boletines. El MVP no se da de baja solo (evita clics accidentales).</p>
@@ -106,6 +115,7 @@
 </footer>
 
 <script src="classifier.js"></script>
+<script src="csv.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

@@ -2,6 +2,7 @@
 // Ejecutar: npm test  (o: node tests/run-tests.js)
 const assert = require("node:assert/strict");
 const { norm, classify } = require("../classifier.js");
+const { parseCSV } = require("../csv.js");
 
 let passed = 0;
 function t(name, fn) { fn(); passed++; console.log("ok - " + name); }
@@ -102,6 +103,28 @@ t("campos vacíos no rompen el clasificador", () => {
 
 t("norm quita acentos para cazar keywords", () => {
   assert.equal(norm("cupón OFERTA"), "cupon oferta");
+});
+
+t("CSV con comillas y comas no se rompe", () => {
+  const recs = parseCSV('from,subject,snippet,date,sizeKB,hasUnsubscribe\n"a@x.com","Oferta, solo hoy","hola",2026-01-01,100,false');
+  assert.equal(recs.length, 1);
+  assert.equal(recs[0].subject, "Oferta, solo hoy");
+});
+
+t("CSV respeta el orden de columnas por cabecera", () => {
+  const recs = parseCSV('subject,from\nHola,a@x.com');
+  assert.equal(recs[0].from, "a@x.com");
+  assert.equal(recs[0].subject, "Hola");
+});
+
+t("CSV con CRLF y comillas escapadas", () => {
+  const recs = parseCSV('from,subject\r\n"a@x.com","dice ""hola"""\r\n');
+  assert.equal(recs[0].subject, 'dice "hola"');
+});
+
+t("CSV vacío devuelve lista vacía", () => {
+  assert.deepEqual(parseCSV(""), []);
+  assert.deepEqual(parseCSV("from,subject\n"), []);
 });
 
 console.log(`\n${passed} passed`);

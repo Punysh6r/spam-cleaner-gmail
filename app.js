@@ -1,6 +1,6 @@
 // MailClean MVP — UI + datos demo (100% cliente).
 // La clasificación vive en classifier.js (fuente única, testeable en Node).
-/* global classify, norm */
+/* global classify, norm, parseCSV */
 
 const DEMO = [
   {from:"shein-ofertas@promo.shein.com",name:"SHEIN",subject:"-80% SOLO HOY!!! Cupón gratis 🎁",snippet:"Compra ya, últimos minutos, haz clic aquí para reclamar tu premio",date:"2026-09-20",sizeKB:180,hasUnsubscribe:true,unsub:"https://promo.shein.com/unsub?m=123"},
@@ -91,6 +91,29 @@ function render(){
     </div>`;
   }).join("");
   box.querySelectorAll('input[type=checkbox]').forEach(c=>c.onchange=()=>{ c.checked?state.selected.add(c.dataset.id):state.selected.delete(c.dataset.id); render(); });
+  renderTopSenders();
+}
+
+function renderTopSenders(){
+  const wrap = document.getElementById("topsWrap"), box = document.getElementById("tops");
+  const groups = {};
+  state.mails.filter(m=>!state.deleted.has(m.id)).forEach(m=>{
+    const c = classify(m, state.mails);
+    const g = groups[m.from] = groups[m.from] || {name:m.name||m.from, from:m.from, n:0, sum:0};
+    g.n++; g.sum += c.score;
+  });
+  const arr = Object.values(groups).sort((a,b)=> b.n-a.n || (b.sum/b.n)-(a.sum/a.n)).slice(0,6);
+  if(!arr.length){ wrap.classList.add("hidden"); return; }
+  wrap.classList.remove("hidden");
+  box.innerHTML = arr.map(g=>`<div class="top">
+      <div><div class="m-from">${esc(g.name)} <span class="muted">&lt;${esc(g.from)}&gt;</span></div>
+      <div class="m-meta"><span>${g.n} correos</span><span>riesgo medio ${Math.round(g.sum/g.n)}</span></div></div>
+      <button class="btn" data-from="${esc(g.from)}">Seleccionar</button>
+    </div>`).join("");
+  box.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    state.mails.filter(m=>m.from===b.dataset.from).forEach(m=>state.selected.add(m.id));
+    render();
+  });
 }
 
 function exportCSV(){
@@ -113,11 +136,19 @@ function renderUnsub(){
 }
 
 function importCSV(text){
-  const lines = text.trim().split(/\r?\n/); if(lines.length<2) return alert("CSV vacío. Cabecera: from,subject,snippet,date,sizeKB,hasUnsubscribe");
-  const rows = lines.slice(1).map((ln,i)=>{
-    const parts = ln.split(","); // formato simple sin comas escapadas salvo básico
-    return {id:"csv-"+Date.now()+"-"+i, from:(parts[0]||"desconocido@mail.com").trim(), subject:(parts[1]||"Sin asunto").trim(), snippet:(parts[2]||"").trim(), date:(parts[3]||"2026-09-22").trim(), sizeKB:+(parts[4]||100), hasUnsubscribe:/true|1|si/i.test(parts[5]||""), name:(parts[0]||"").split("@")[0], unsub:""};
-  });
+  const recs = parseCSV(text);
+  if(!recs.length) return alert("CSV vacío o sin cabecera. Usa: from,subject,snippet,date,sizeKB,hasUnsubscribe");
+  const rows = recs.map((r,i)=>({
+    id:"csv-"+Date.now()+"-"+i,
+    from:(r.from||"desconocido@mail.com"),
+    subject:(r.subject||"Sin asunto"),
+    snippet:(r.snippet||""),
+    date:(r.date||"2026-09-22"),
+    sizeKB:+(r.sizeKB||100),
+    hasUnsubscribe:/true|1|sí|si/i.test(r.hasUnsubscribe||""),
+    name:(r.from||"").split("@")[0]||"Desconocido",
+    unsub:""
+  }));
   state.mails = rows; state.selected.clear(); state.archived.clear(); state.deleted.clear(); render();
   alert(`Importados ${rows.length} correos. Revisa el score y filtra por SPAM.`);
 }
