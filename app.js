@@ -61,6 +61,7 @@ function visibleMails(){
 
 function render(){
   const vis = visibleMails();
+  document.getElementById("count").textContent = `Mostrando ${vis.length} de ${state.mails.length} correos`;
   document.getElementById("selCount").textContent = `${state.selected.size} seleccionados`;
   const totals = state.mails.map(m=>classify(m,state.mails));
   const n = t => totals.filter(x=>x.category===t).length;

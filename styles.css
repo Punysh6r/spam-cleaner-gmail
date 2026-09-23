@@ -38,3 +38,4 @@ dialog{background:var(--card);color:var(--txt);border:1px solid var(--line);bord
 .tops h3{margin:0 0 10px;font-size:15px}
 .tops-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.count{font-size:13px;margin:10px 2px 0}
