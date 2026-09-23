@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MailClean — Limpiador de SPAM de Gmail (MVP)</title>
+<meta name="description" content="MVP: detecta y limpia correos SPAM / promociones / newsletters de Gmail. 100% en local, sin servidor." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand">
+      <div class="logo">📧</div>
+      <div>
+        <h1>MailClean <span class="pill">MVP</span></h1>
+        <p>Limpia tu Gmail de SPAM y basura · todo ocurre en tu navegador</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button id="btnDemo" class="btn primary">Cargar demo</button>
+      <button id="btnGmail" class="btn">Conectar Gmail real</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="privacy">
+    🔒 <strong>Privacidad por diseño:</strong> ningún correo sale de tu equipo.
+    La clasificación es con reglas explicables en <code>app.js</code>, sin IA externa ni servidor.
+    Ideal para defender la decisión técnica el 13/10.
+  </section>
+
+  <section class="stats" id="stats">
+    <div class="card"><div class="k" id="stTotal">0</div><div class="l">correos analizados</div></div>
+    <div class="card danger"><div class="k" id="stSpam">0</div><div class="l">SPAM probable (≥70)</div></div>
+    <div class="card warn"><div class="k" id="stPromo">0</div><div class="l">promos / newsletters</div></div>
+    <div class="card ok"><div class="k" id="stInbox">0</div><div class="l">bandeja principal</div></div>
+    <div class="card"><div class="k" id="stSize">0 MB</div><div class="l">liberables aprox.</div></div>
+  </section>
+
+  <section class="toolbar">
+    <input id="q" type="search" placeholder="Buscar por remitente o asunto… (ej: shein, factura)" />
+    <select id="filtro">
+      <option value="todos">Todos</option>
+      <option value="spam">SPAM probable</option>
+      <option value="promo">Promos / newsletters</option>
+      <option value="inbox">Bandeja principal</option>
+      <option value="seleccionados">Seleccionados</option>
+    </select>
+    <select id="orden">
+      <option value="score">Orden: mayor riesgo</option>
+      <option value="fecha">Orden: más recientes</option>
+      <option value="size">Orden: más pesados</option>
+    </select>
+    <button id="btnScan" class="btn primary">Escanear</button>
+    <label class="btn file">Importar CSV <input id="file" type="file" accept=".csv,.txt" hidden /></label>
+    <button id="btnExport" class="btn">Exportar plan CSV</button>
+  </section>
+
+  <section class="bulkbar">
+    <label><input type="checkbox" id="selAll" /> Seleccionar visibles</label>
+    <span id="selCount">0 seleccionados</span>
+    <div class="sp"></div>
+    <button id="btnArchive" class="btn">Archivar</button>
+    <button id="btnDelete" class="btn danger">Eliminar</button>
+    <button id="btnUnsub" class="btn">Ver bajas (unsubscribe)</button>
+    <button id="btnReset" class="btn ghost">Restablecer demo</button>
+  </section>
+
+  <section id="unsubPanel" class="unsub hidden">
+    <h3>Enlaces para darte de baja <span id="unsubN"></span></h3>
+    <p>Copia y abre cada enlace para dejar de recibir esos boletines. El MVP no se da de baja solo (evita clics accidentales).</p>
+    <ul id="unsubList"></ul>
+  </section>
+
+  <section id="lista" class="lista"></section>
+
+  <section class="how">
+    <h2>¿Cómo funciona? (para la defensa de 5 min)</h2>
+    <ol>
+      <li><strong>Carga:</strong> pulsa <em>Cargar demo</em> (24 correos realistas) o <em>Importar CSV</em> con tu exportación.</li>
+      <li><strong>Clasifica:</strong> cada correo recibe un score 0–100 con motivos visibles. Reglas en <code>classify()</code> de <code>app.js</code>.</li>
+      <li><strong>Limpia:</strong> filtra por SPAM, selecciona y pulsa Archivar / Eliminar / Ver bajas. Exporta el plan en CSV como evidencia.</li>
+    </ol>
+    <p><strong>Decisión técnica que defendemos:</strong> app 100% estática, sin backend ni IA externa. Privacidad total, coste 0, despliegue en Vercel/Netlify en 2 min y reglas auditables frente a caja negra.</p>
+    <details>
+      <summary>¿Y Gmail real?</summary>
+      <p>Pulsa <em>Conectar Gmail real</em> para ver las 3 vías: (A) la más fácil para el MVP: exportar con Google Takeout e importar el CSV; (B) pegar remitentes; (C) OAuth Gmail API (requiere Client ID, documentado en README).</p>
+    </details>
+  </section>
+</main>
+
+<dialog id="dlgGmail">
+  <h3>Conectar Gmail real — 3 opciones</h3>
+  <p><strong>Opción A (recomendada para el MVP):</strong> Ve a <code>takeout.google.com</code> → solo Gmail → exporta → convierte a CSV con columnas <code>from,subject,snippet,date,sizeKB,hasUnsubscribe</code> e impórtalo con el botón <em>Importar CSV</em>.</p>
+  <p><strong>Opción B:</strong> en Gmail busca <code>unsubscribe</code>, copia 10–20 líneas (remitente + asunto) a un CSV e impórtalas.</p>
+  <p><strong>Opción C (avanzada):</strong> crear Client ID OAuth en Google Cloud → habilitar Gmail API → implementar <code>gapi.client.gmail.users.messages.list</code>. No incluido en el MVP para no pedir credenciales en clase. Instrucciones completas en <code>README.md</code>.</p>
+  <p class="muted">El MVP nunca sube tus correos a ningún servidor: todo se procesa en esta página.</p>
+  <form method="dialog"><button class="btn primary">Entendido</button></form>
+</dialog>
+
+<footer class="wrap foot">
+  <span>MailClean MVP · Curso 2026 · Hecho con agente IA dirigido por el equipo</span>
+  <span><a href="README.md">README</a> · <a href="PROMPT-LOG.md">PROMPT-LOG</a> · <a href="INFORME-REFLEXION.md">Informe</a></span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
