@@ -11,7 +11,7 @@
 
 Limpia tu Gmail de SPAM y basura (SHEIN, TEMU, casinos, phishing, newsletters eternas) con un clasificador **explicable 0–100**: cada veredicto muestra sus motivos, nada sale de tu navegador y el plan de limpieza se exporta en CSV. Built as a course MVP: every decision is documented in [`docs/DECISION_LOG.md`](docs/DECISION_LOG.md).
 
-**Live demo:** despliega gratis en [Vercel](https://vercel.com) importando este repo (entrada: `index.html`, sin build), y pega la URL aquí.
+**Live demo:** https://spam-cleaner-gmail.vercel.app
 
 ## What it does
 

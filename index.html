@@ -27,7 +27,7 @@
 <main class="wrap">
   <section class="privacy">
     🔒 <strong>Privacidad por diseño:</strong> ningún correo sale de tu equipo.
-    La clasificación es con reglas explicables en <code>app.js</code>, sin IA externa ni servidor.
+    La clasificación es con reglas explicables en <code>classifier.js</code>, sin IA externa ni servidor.
     Ideal para defender la decisión técnica el 13/10.
   </section>
 
@@ -80,7 +80,7 @@
     <h2>¿Cómo funciona? (para la defensa de 5 min)</h2>
     <ol>
       <li><strong>Carga:</strong> pulsa <em>Cargar demo</em> (24 correos realistas) o <em>Importar CSV</em> con tu exportación.</li>
-      <li><strong>Clasifica:</strong> cada correo recibe un score 0–100 con motivos visibles. Reglas en <code>classify()</code> de <code>app.js</code>.</li>
+      <li><strong>Clasifica:</strong> cada correo recibe un score 0–100 con motivos visibles. Reglas en <code>classify()</code> de <code>classifier.js</code>.</li>
       <li><strong>Limpia:</strong> filtra por SPAM, selecciona y pulsa Archivar / Eliminar / Ver bajas. Exporta el plan en CSV como evidencia.</li>
     </ol>
     <p><strong>Decisión técnica que defendemos:</strong> app 100% estática, sin backend ni IA externa. Privacidad total, coste 0, despliegue en Vercel/Netlify en 2 min y reglas auditables frente a caja negra.</p>
